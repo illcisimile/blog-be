@@ -9,7 +9,7 @@ usersRouter.get('/', async (request, response) => {
 });
 
 usersRouter.post('/register', async (request, response) => {
-  const { username, name, password } = request.body;
+  const { username, name, password, confirmPassword } = request.body;
 
   if (!password) {
     return response.status(400).json({ error: 'password is required' });
@@ -19,6 +19,10 @@ usersRouter.post('/register', async (request, response) => {
     return response
       .status(400)
       .json({ error: 'password length must be at least 3 characters' });
+  }
+
+  if (password !== confirmPassword) {
+    return response.status(400).json({ error: 'passwords do not match' });
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
