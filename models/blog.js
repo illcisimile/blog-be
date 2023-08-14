@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 const blogSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  content: { type: String, required: true },
+  title: { type: String, required: [true, '{PATH} is required'] },
+  description: { type: String, required: [true, '{PATH} is required'] },
+  content: { type: String, required: [true, '{PATH} is required'] },
   tags: [{ type: String }],
   author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   createdAt: { type: Date, default: Date.now },

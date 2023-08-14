@@ -2,13 +2,18 @@ const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, minLength: 3, unique: true },
-  name: String,
+  username: {
+    type: String,
+    required: [true, '{PATH} is required'],
+    minLength: [3, '{PATH} must be at least 3 characters'],
+    unique: true,
+  },
+  name: { type: String, required: [true, '{PATH} is required'] },
   passwordHash: String,
   blogs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Blog' }],
 });
 
-userSchema.plugin(uniqueValidator);
+userSchema.plugin(uniqueValidator, { message: '{PATH} is already taken' });
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {

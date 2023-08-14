@@ -11,18 +11,42 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/signup', async (request, response) => {
   const { username, name, password, confirmPassword } = request.body;
 
-  if (!password) {
-    return response.status(400).json({ error: 'password is required' });
+  let nameError,
+    usernameError,
+    passwordError,
+    confirmPasswordError = null;
+
+  if (!name) {
+    nameError = { name: 'name is required' };
+  }
+
+  if (!username) {
+    usernameError = { username: 'username is required' };
   }
 
   if (password.length < 3) {
-    return response
-      .status(400)
-      .json({ error: 'password length must be at least 3 characters' });
+    passwordError = {
+      password: 'password must be at least 3 characters',
+    };
+  }
+
+  if (!password) {
+    passwordError = { password: 'password is required' };
   }
 
   if (password !== confirmPassword) {
-    return response.status(400).json({ error: 'passwords do not match' });
+    confirmPasswordError = { confirmPassword: 'passwords do not match' };
+  }
+
+  if (!name || !username || !password || !confirmPassword) {
+    return response.status(400).json({
+      error: {
+        ...nameError,
+        ...usernameError,
+        ...passwordError,
+        ...confirmPasswordError,
+      },
+    });
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
