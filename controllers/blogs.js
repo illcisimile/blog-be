@@ -74,7 +74,7 @@ blogsRouter.put('/:blogId', userExtractor, async (request, response) => {
   const updatedBlog = await Blog.findByIdAndUpdate(
     request.params.blogId,
     updatedBlogObject,
-    { new: true }
+    { new: true, runValidators: true }
   );
 
   const populatedUpdatedBlog = await updatedBlog.populate('author', {
