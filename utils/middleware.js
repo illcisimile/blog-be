@@ -44,7 +44,14 @@ const errorHandler = (error, request, response, next) => {
     case 'CastError':
       return response.status(400).json({ error: 'malformatted id' });
     case 'ValidationError':
-      return response.status(400).json({ error: error.message });
+      const validationErrors = Object.entries(error.errors).reduce(
+        (acc, [key, error]) => {
+          acc[key] = error.message;
+          return acc;
+        },
+        {}
+      );
+      return response.status(400).json({ error: validationErrors });
     case 'JsonWebTokenError':
       return response.status(400).json({ error: error.message });
     case 'TokenExpiredError':
