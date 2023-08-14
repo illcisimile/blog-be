@@ -8,7 +8,7 @@ usersRouter.get('/', async (request, response) => {
   response.status(200).json(users);
 });
 
-usersRouter.post('/register', async (request, response) => {
+usersRouter.post('/signup', async (request, response) => {
   const { username, name, password, confirmPassword } = request.body;
 
   if (!password) {
@@ -38,7 +38,7 @@ usersRouter.post('/register', async (request, response) => {
   response.status(201).json(savedUser);
 });
 
-usersRouter.post('/login', async (request, response) => {
+usersRouter.post('/signin', async (request, response) => {
   const { username, password } = request.body;
 
   const user = await User.findOne({ username });
