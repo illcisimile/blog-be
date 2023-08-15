@@ -18,6 +18,10 @@
     {
       "src": "/",
       "dest": "build/index.html"
+    },
+    {
+      "src": "/(.+)",
+      "dest": "public/$1"
     }
   ]
 }
