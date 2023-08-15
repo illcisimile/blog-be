@@ -65,6 +65,26 @@ usersRouter.post('/signup', async (request, response) => {
 usersRouter.post('/signin', async (request, response) => {
   const { username, password } = request.body;
 
+  let usernameError,
+    passwordError = null;
+
+  if (!username) {
+    usernameError = { username: 'username is required' };
+  }
+
+  if (!password) {
+    passwordError = { password: 'password is required' };
+  }
+
+  if (!username || !password) {
+    return response.status(400).json({
+      error: {
+        ...usernameError,
+        ...passwordError,
+      },
+    });
+  }
+
   const user = await User.findOne({ username });
 
   const passwordCorrect =
