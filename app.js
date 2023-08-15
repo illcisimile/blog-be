@@ -1,7 +1,7 @@
 const express = require('express');
 require('express-async-errors');
 const app = express();
-// const cors = require('cors');
+const cors = require('cors');
 
 const usersRouter = require('./controllers/users');
 const blogsRouter = require('./controllers/blogs');
@@ -23,8 +23,8 @@ mongoose
     logger.error('Error connecting to MongoDB:', error.message)
   );
 
-// app.use(cors());
-// static build
+app.use(cors());
+app.use(express.static('build'));
 app.use(express.json());
 app.use(middleware.requestLogger);
 app.use(middleware.tokenExtractor);
