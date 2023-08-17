@@ -2,6 +2,7 @@ const express = require('express');
 require('express-async-errors');
 const app = express();
 const cors = require('cors');
+const path = require('path');
 
 const usersRouter = require('./controllers/users');
 const blogsRouter = require('./controllers/blogs');
@@ -32,6 +33,10 @@ app.use(middleware.tokenExtractor);
 // routes
 app.use('/api/users', usersRouter);
 app.use('/api/blogs', blogsRouter);
+
+app.get('*', (request, response) =>
+  response.sendFile(path.join(__dirname, 'build', 'index.html'))
+);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
