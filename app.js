@@ -24,7 +24,7 @@ mongoose
   );
 
 app.use(cors());
-app.use(express.static(__dirname + 'build'));
+app.use(express.static(__dirname + '/build'));
 app.get('*', (request, response) => {
   response.sendFile(path.resolve(__dirname, 'build', 'index.html'));
 });
