@@ -33,9 +33,9 @@ const userExtractor = async (request, response, next) => {
   next();
 };
 
-const unknownEndpoint = (request, response) => {
-  response.status(404).json({ error: 'unknown endpoint' });
-};
+// const unknownEndpoint = (request, response) => {
+//   response.status(404).json({ error: 'unknown endpoint' });
+// };
 
 const errorHandler = (error, request, response, next) => {
   logger.error(error.message);
@@ -65,6 +65,6 @@ module.exports = {
   requestLogger,
   tokenExtractor,
   userExtractor,
-  unknownEndpoint,
+  // unknownEndpoint,
   errorHandler,
 };
