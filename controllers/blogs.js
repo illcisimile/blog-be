@@ -11,7 +11,9 @@ blogsRouter.get('/', async (request, response) => {
 });
 
 blogsRouter.get('/:blogId', async (request, response) => {
-  const blog = await Blog.findById(request.params.blogId).populate('author', {
+  const blogId = request.params.blogId;
+
+  const blog = await Blog.findById(blogId).populate('author', {
     name: 1,
     username: 1,
   });
@@ -49,10 +51,11 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 });
 
 blogsRouter.put('/:blogId', userExtractor, async (request, response) => {
+  const blogId = request.params.blogId;
   const body = request.body;
   const user = request.user;
 
-  const blog = await Blog.findById(request.params.blogId);
+  const blog = await Blog.findById(blogId);
 
   if (!blog) {
     return response.status(404).json({ error: 'blog does not exist' });
@@ -71,11 +74,10 @@ blogsRouter.put('/:blogId', userExtractor, async (request, response) => {
     updatedAt: Date.now(),
   };
 
-  const updatedBlog = await Blog.findByIdAndUpdate(
-    request.params.blogId,
-    updatedBlogObject,
-    { new: true, runValidators: true }
-  );
+  const updatedBlog = await Blog.findByIdAndUpdate(blogId, updatedBlogObject, {
+    new: true,
+    runValidators: true,
+  });
 
   const populatedUpdatedBlog = await updatedBlog.populate('author', {
     name: 1,
@@ -83,6 +85,26 @@ blogsRouter.put('/:blogId', userExtractor, async (request, response) => {
   });
 
   response.status(200).json(populatedUpdatedBlog);
+});
+
+blogsRouter.delete('/:blogId', userExtractor, async (request, response) => {
+  const blogId = request.params.blogId;
+  const user = request.user;
+  const blog = await Blog.findById(blogId);
+
+  if (!blog) {
+    return response.status(404).json({ error: 'blog does not exist' });
+  }
+
+  if (blog.author.toString() !== user.id) {
+    return response.status(401).json({ error: 'unauthorized' });
+  }
+
+  user.blogs = user.blogs.filter((blog) => blog.toString() !== blogId);
+  await user.save();
+
+  await Blog.findByIdAndRemove(blogId);
+  response.status(204).end();
 });
 
 module.exports = blogsRouter;
